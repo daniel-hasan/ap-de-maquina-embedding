@@ -52,8 +52,11 @@ class Experimento():
 
             ##1. Caso haja um metodo de otimizacao, obtenha o melhor metodo com ele
             if(self.ClasseObjetivoOtimizacao is not None):
-                if not self.load_if_exists:
-                    optuna.delete_study(study_name=f"{self.nom_experimento}_fold_{i}", storage=f'sqlite:///resultados/optuna_studies.db')
+                try:
+                    if not self.load_if_exists:
+                        optuna.delete_study(study_name=f"{self.nom_experimento}_fold_{i}", storage=f'sqlite:///resultados/optuna_studies.db')
+                except KeyError:
+                    pass
                 study = optuna.create_study(study_name=f"{self.nom_experimento}_fold_{i}",sampler=self.sampler, direction="maximize", 
                                             storage=f'sqlite:///resultados/optuna_studies.db', load_if_exists=self.load_if_exists)
                 objetivo_otimizacao = self.ClasseObjetivoOtimizacao(fold,self.preproc_method)
